@@ -22,7 +22,10 @@ default_containers = (
     os.environ.get('PROJECT_DOCKER_COMPOSE_CONTAINERS').split(',')
     if os.environ.get('PROJECT_DOCKER_COMPOSE_CONTAINERS') else None
 )
-default_var_dir = os.environ.get('PROJECT_DOCKER_COMPOSE_VAR_DIR')
+default_var_dirs = (
+    os.environ.get('PROJECT_DOCKER_COMPOSE_VAR_DIRS').split(',')
+    if os.environ.get('PROJECT_DOCKER_COMPOSE_VAR_DIRS') else None
+)
 default_containers_dir_to_copy = os.environ.get('PROJECT_DOCKER_COMPOSE_CONTAINERS_DIR_TO_COPY', '').split(',')
 default_containers_install_command = os.environ.get('PROJECT_DOCKER_COMPOSE_CONTAINERS_INSTALL_COMMAND', '').split(',')
 
@@ -113,7 +116,7 @@ def up(project_name, compose_file, container):
 @click.option('--compose-file', '-f', help='Compose file', type=str, required=True, multiple=True,
               default=default_compose_files)
 @click.option('--var-dir', '-v', help='Variable content directory', type=str, required=True,
-              default=default_var_dir)
+              multiple=True, default=default_var_dirs)
 @click.option('--container-dir-to-copy', '-d',
               help='Container dir which will be copied after build in format '
                    'DOCKER_CONTAINER_NAME:CONTAINER_DIRECTORY:HOST_DIRECTORY',

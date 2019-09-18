@@ -63,16 +63,20 @@ def docker_clean(hard=False):
             subprocess.check_call('docker volume rm $(docker volume ls -q)', shell=True)
 
 
-def compose_install(project_name, compose_files, var_dir=None, containers_dir_to_copy=None,
+def compose_install(project_name, compose_files, var_dirs, containers_dir_to_copy=None,
                     install_container_commands=None):
-    if var_dir:
+    for var_dir in var_dirs:
         var_dir = Path.cwd() / var_dir
+        try:
+            os.makedirs(var_dir)
+        except FileExistsError:
+            pass
 
     for _, _, host_dir in containers_dir_to_copy:
         shutil.rmtree(Path.cwd() / host_dir, ignore_errors=True)
 
-    if var_dir:
-        shutil.rmtree(var_dir, ignore_errors=True)
+    # if var_dir:
+    #     shutil.rmtree(var_dir, ignore_errors=True)
 
     for _, _, host_dir in containers_dir_to_copy:
         os.makedirs(Path.cwd() /host_dir)
